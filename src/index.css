@@ -1,0 +1,64 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --nyt-black: #121212;
+    --nyt-gray: #727272;
+    --nyt-light-gray: #ebebeb;
+    --nyt-border: #e2e2e2;
+    --nyt-blue: #326891;
+    --nyt-accent-blue: #2f5979;
+  }
+}
+
+.masthead-title {
+  font-family: 'UnifrakturMaguntia', 'Playfair Display', Georgia, serif;
+  letter-spacing: -0.5px;
+}
+
+.nyt-headline {
+  font-family: 'Newsreader', 'Playfair Display', Georgia, serif;
+  font-feature-settings: "kern" 1, "liga" 1;
+  letter-spacing: -0.015em;
+  line-height: 1.18;
+}
+
+.nyt-summary {
+  font-family: 'Newsreader', Georgia, serif;
+  line-height: 1.4;
+  color: #333333;
+}
+
+.nyt-meta {
+  font-family: 'Libre Franklin', -apple-system, sans-serif;
+  font-size: 0.6875rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: #727272;
+}
+
+.font-sans-meta {
+  font-family: 'Libre Franklin', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.border-nyt {
+  border-color: #e2e2e2;
+}
+
+.border-nyt-dark {
+  border-color: #121212;
+}
+
+/* Custom newspaper column drop cap */
+.nyt-dropcap::first-letter {
+  font-family: 'Newsreader', 'Playfair Display', Georgia, serif;
+  float: left;
+  font-size: 3.8rem;
+  line-height: 0.8;
+  padding-top: 4px;
+  padding-right: 8px;
+  padding-bottom: 2px;
+  font-weight: 700;
+  color: #121212;
+}

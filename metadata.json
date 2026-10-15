@@ -1,0 +1,6 @@
+{
+  "name": "The New York Times",
+  "description": "The New York Times front page and reader featuring breaking news, live briefings, opinion columns, poll tracker, and NYT Games.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
