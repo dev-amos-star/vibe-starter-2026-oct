@@ -89,28 +89,43 @@ export const LeadStory: React.FC<LeadStoryProps> = ({
         </figure>
 
         {/* Secondary Follow-up in Lead Container */}
-        <div className="mt-4 pt-3 border-t border-[#e2e2e2]">
-          <h2 className="nyt-headline text-lg font-bold text-[#121212] leading-snug">
-            <button
-              onClick={() => onSelectArticle(secondaryArticle.id)}
-              className="text-left hover:underline cursor-pointer"
-            >
-              {secondaryArticle.title}
-            </button>
-          </h2>
+        <div className="mt-4 pt-3 border-t border-[#e2e2e2] flex items-start justify-between gap-3">
+          <div className="flex-1">
+            <h2 className="nyt-headline text-lg font-bold text-[#121212] leading-snug">
+              <button
+                onClick={() => onSelectArticle(secondaryArticle.id)}
+                className="text-left hover:underline cursor-pointer"
+              >
+                {secondaryArticle.title}
+              </button>
+            </h2>
 
-          <div className="flex items-center space-x-3 mt-1.5 text-[#727272]">
-            <span className="nyt-meta">{secondaryArticle.readTime}</span>
-            <button
-              onClick={() => onOpenComments(secondaryArticle.id)}
-              className="inline-flex items-center text-xs font-sans-meta space-x-1 hover:text-[#121212] cursor-pointer"
-            >
-              <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
-                <path d="M4 2h16a2 2 0 012 2v12a2 2 0 01-2 2H6l-4 4V4a2 2 0 012-2z" />
-              </svg>
-              <span>{secondaryArticle.commentCount || 519}</span>
-            </button>
+            <div className="flex items-center space-x-3 mt-1.5 text-[#727272]">
+              <span className="nyt-meta">{secondaryArticle.readTime}</span>
+              <button
+                onClick={() => onOpenComments(secondaryArticle.id)}
+                className="inline-flex items-center text-xs font-sans-meta space-x-1 hover:text-[#121212] cursor-pointer"
+              >
+                <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                  <path d="M4 2h16a2 2 0 012 2v12a2 2 0 01-2 2H6l-4 4V4a2 2 0 012-2z" />
+                </svg>
+                <span>{secondaryArticle.commentCount || 519}</span>
+              </button>
+            </div>
           </div>
+
+          {secondaryArticle.image && (
+            <div
+              onClick={() => onSelectArticle(secondaryArticle.id)}
+              className="w-20 h-20 sm:w-24 sm:h-24 shrink-0 overflow-hidden border border-[#e2e2e2] cursor-pointer group"
+            >
+              <img
+                src={secondaryArticle.image}
+                alt={secondaryArticle.title}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              />
+            </div>
+          )}
         </div>
       </article>
     </section>

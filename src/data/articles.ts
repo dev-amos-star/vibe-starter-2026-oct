@@ -36,6 +36,8 @@ export const ARTICLES: Record<string, Article> = {
     date: 'Oct. 14, 2026',
     section: 'Politics',
     kicker: 'Personnel & Influence',
+    image: '/src/assets/images/nyt_kimberly_guilfoyle_portrait_1792031958434.jpg',
+    imageCaption: 'Kimberly Guilfoyle speaking at a campaign event in Palm Beach, Fla. (Doug Mills/The New York Times)',
     commentCount: 519,
     body: [
       'WASHINGTON — For nearly a decade, Kimberly Guilfoyle occupied a unique perch at the intersection of media celebrity, donor mobilization, and presidential politics.',
@@ -129,6 +131,8 @@ export const ARTICLES: Record<string, Article> = {
     date: 'Oct. 14, 2026',
     section: 'U.S. Politics',
     kicker: 'Midterm Briefing',
+    image: '/src/assets/images/nyt_texas_senate_rally_1792031986447.jpg',
+    imageCaption: 'Supporters gather at a campaign rally outside the state Capitol in Austin, Texas. (Tamir Kalifa for The New York Times)',
     commentCount: 841,
     pullQuote: 'The battle for Texas is no longer fought on the rural plains, but in the cul-de-sacs of Collin, Williamson, and Fort Bend counties.',
     pullQuoteAuthor: 'The New York Times / Siena College Poll',

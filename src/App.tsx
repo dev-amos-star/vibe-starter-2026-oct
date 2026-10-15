@@ -11,6 +11,7 @@ import { LeadStory } from './components/LeadStory';
 import { SecondaryNews } from './components/SecondaryNews';
 import { GamesStrip } from './components/GamesStrip';
 import { OpinionSection } from './components/OpinionSection';
+import { BroadsheetView } from './components/BroadsheetView';
 import { Footer } from './components/Footer';
 import { ArticleView } from './components/ArticleView';
 import { PollTrackerView } from './components/PollTrackerView';
@@ -27,6 +28,10 @@ export default function App() {
   const [selectedGame, setSelectedGame] = useState<GameKey>('wordle');
   const [liveWarFilterTag, setLiveWarFilterTag] = useState<string | undefined>(undefined);
 
+  // Pro features: View Mode and Reading Theme
+  const [viewMode, setViewMode] = useState<'mobile' | 'broadsheet'>('broadsheet');
+  const [readingTheme, setReadingTheme] = useState<'light' | 'sepia' | 'dark'>('light');
+
   // Modals & Drawers
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -37,15 +42,22 @@ export default function App() {
   // User preferences & storage
   const [fontSize, setFontSize] = useState<'standard' | 'large' | 'larger'>('standard');
   const [isSubscribed, setIsSubscribed] = useState(false);
-  const [savedArticleIds, setSavedArticleIds] = useState<string[]>(['lead-women-administration']);
+  const [savedArticleIds, setSavedArticleIds] = useState<string[]>([
+    'lead-women-administration',
+    'texas-senate-race',
+  ]);
 
-  // Load / Save persistent bookmarks
+  // Load persistent bookmarks & settings
   useEffect(() => {
     try {
       const saved = localStorage.getItem('nyt_saved_articles');
       if (saved) setSavedArticleIds(JSON.parse(saved));
       const sub = localStorage.getItem('nyt_is_subscribed');
       if (sub === 'true') setIsSubscribed(true);
+      const theme = localStorage.getItem('nyt_reading_theme');
+      if (theme && (theme === 'light' || theme === 'sepia' || theme === 'dark')) {
+        setReadingTheme(theme);
+      }
     } catch {
       // Local storage fallback
     }
@@ -62,6 +74,16 @@ export default function App() {
       }
       return next;
     });
+  };
+
+  const handleToggleTheme = () => {
+    const nextTheme = readingTheme === 'light' ? 'sepia' : readingTheme === 'sepia' ? 'dark' : 'light';
+    setReadingTheme(nextTheme);
+    try {
+      localStorage.setItem('nyt_reading_theme', nextTheme);
+    } catch {
+      // Ignored
+    }
   };
 
   const handleSubscribe = () => {
@@ -107,7 +129,6 @@ export default function App() {
     } else if (section === 'Home Page') {
       setActiveScreen('home');
     } else {
-      // Find first article in this section or default to lead
       const matched = Object.values(ARTICLES).find(
         (a) => a.section.toLowerCase().includes(section.toLowerCase())
       );
@@ -126,9 +147,16 @@ export default function App() {
   const activeArticle = ARTICLES[selectedArticleId] || ARTICLES['lead-women-administration'];
   const commentArticle = ARTICLES[commentsArticleId] || activeArticle;
 
+  const appThemeClasses =
+    readingTheme === 'dark'
+      ? 'bg-[#121212] text-[#e0e0e0]'
+      : readingTheme === 'sepia'
+      ? 'bg-[#fbf9f5] text-[#292524]'
+      : 'bg-white text-[#121212]';
+
   return (
-    <div className="min-h-screen bg-white text-[#121212] flex flex-col font-sans-meta selection:bg-neutral-200">
-      {/* Header is always visible on Home; and provides persistent branding */}
+    <div className={`min-h-screen flex flex-col font-sans-meta selection:bg-neutral-200 ${appThemeClasses}`}>
+      {/* Header with masthead, editions, tickers, and navigation */}
       <Header
         onOpenMenu={() => setIsMenuOpen(true)}
         onOpenProfile={() => setIsProfileOpen(true)}
@@ -138,37 +166,51 @@ export default function App() {
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }}
         savedCount={savedArticleIds.length}
+        viewMode={viewMode}
+        onToggleViewMode={() => setViewMode(viewMode === 'broadsheet' ? 'mobile' : 'broadsheet')}
+        readingTheme={readingTheme}
+        onToggleTheme={handleToggleTheme}
+        onSelectSection={handleSectionSelect}
       />
 
       {/* Screen Router */}
       <div className="flex-1">
         {activeScreen === 'home' && (
-          <main className="max-w-xl mx-auto px-4 pb-12">
-            {/* Lead Story */}
-            <LeadStory
-              leadArticle={ARTICLES['lead-women-administration']}
-              secondaryArticle={ARTICLES['kimberly-guilfoyle']}
-              onSelectArticle={handleSelectArticle}
-              onOpenComments={handleOpenComments}
-            />
+          <>
+            {viewMode === 'broadsheet' ? (
+              <BroadsheetView
+                articles={ARTICLES}
+                onSelectArticle={handleSelectArticle}
+                onOpenComments={handleOpenComments}
+                onOpenLiveUpdates={handleOpenLiveUpdates}
+                onOpenPollTracker={handleOpenPollTracker}
+                onSelectGame={handleSelectGame}
+              />
+            ) : (
+              <main className="max-w-xl mx-auto px-4 pb-12">
+                <LeadStory
+                  leadArticle={ARTICLES['lead-women-administration']}
+                  secondaryArticle={ARTICLES['kimberly-guilfoyle']}
+                  onSelectArticle={handleSelectArticle}
+                  onOpenComments={handleOpenComments}
+                />
 
-            {/* Secondary News List & Topic Clusters */}
-            <SecondaryNews
-              articles={ARTICLES}
-              onSelectArticle={handleSelectArticle}
-              onOpenLiveUpdates={handleOpenLiveUpdates}
-              onOpenPollTracker={handleOpenPollTracker}
-            />
+                <SecondaryNews
+                  articles={ARTICLES}
+                  onSelectArticle={handleSelectArticle}
+                  onOpenLiveUpdates={handleOpenLiveUpdates}
+                  onOpenPollTracker={handleOpenPollTracker}
+                />
 
-            {/* NYT Games Interactive Strip */}
-            <GamesStrip onSelectGame={handleSelectGame} />
+                <GamesStrip onSelectGame={handleSelectGame} />
 
-            {/* Opinion Section */}
-            <OpinionSection
-              articles={ARTICLES}
-              onSelectArticle={handleSelectArticle}
-            />
-          </main>
+                <OpinionSection
+                  articles={ARTICLES}
+                  onSelectArticle={handleSelectArticle}
+                />
+              </main>
+            )}
+          </>
         )}
 
         {activeScreen === 'article' && (
@@ -181,6 +223,8 @@ export default function App() {
             onToggleSave={handleToggleSave}
             onOpenComments={handleOpenComments}
             fontSize={fontSize}
+            readingTheme={readingTheme}
+            onToggleTheme={handleToggleTheme}
           />
         )}
 
